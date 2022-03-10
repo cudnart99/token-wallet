@@ -1,11 +1,8 @@
 import {useState} from "react";
 import {Typography, Button, TextField, Grid, CircularProgress, Alert} from '@mui/material';
-import Web3 from 'web3/dist/web3.min.js';
+import Web3 from "web3/dist/web3.min.js";
+import { useSelector } from "react-redux";
 
-const web3 = new Web3(window.ethereum);
-const ERC20Token = require("./ERC20Token");
-const { applyDecimals } = require('../../utils/ethereumAPI');
-const web3Token = new web3.eth.Contract(ERC20Token.abi);
 
 
 const ERC20Create = ( { importToken }) => {
@@ -18,6 +15,12 @@ const ERC20Create = ( { importToken }) => {
     const [errorMessage, setErrorMessage] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
 
+    const web3 = useSelector((state) => state.web3Library);
+    const ERC20Token = require("./ERC20Token");
+    const { applyDecimals } = require('../../utils/ethereumAPI');
+    const web3Token = new web3.eth.Contract(ERC20Token.abi);
+    
+
     const onClickAction = async () => {
         if(successMessage) {
             importToken(web3Token.options.address);
@@ -27,6 +30,7 @@ const ERC20Create = ( { importToken }) => {
         setErrorMessage("");
         setSuccessMessage("");
         const accounts = await web3.eth.getAccounts();
+        console.log("create",accounts[0]);
         try {
             const result = await web3Token.deploy( {
                                         data: ERC20Token.bytecode,

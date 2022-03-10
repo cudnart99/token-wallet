@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Grid, TextField, Button, Alert, CircularProgress } from '@mui/material'
-import Web3 from 'web3/dist/web3.min.js';
+import Web3 from "web3/dist/web3.min.js";
 const web3 = new Web3(window.ethereum);
 
 const { applyDecimals } = require('../../../utils/ethereumAPI');

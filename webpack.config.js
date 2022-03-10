@@ -1,3 +1,5 @@
+const NodePolyfillPlugin = require("node-polyfill-webpack-plugin")
+
 module.exports = {
     //...
     resolve: {
@@ -25,6 +27,17 @@ module.exports = {
         util: require.resolve('util'),
         vm: require.resolve('vm-browserify'),
         zlib: require.resolve('browserify-zlib'),
+        plugins: [
+          new NodePolyfillPlugin()
+        ],
+        resolve: {
+          // ... rest of the resolve config
+          fallback: {
+            "http": require.resolve("stream-http"),
+            "https": require.resolve("https-browserify")
+          }
+        },
+
       },
     },
   };

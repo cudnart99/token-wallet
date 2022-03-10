@@ -5,13 +5,13 @@ const web3 = new Web3(window.ethereum);
 
 const { applyDecimals } = require('../../../utils/ethereumAPI');
 
-const Transfer = ({ web3Token, tokenData, refreshDataGrid }) => {
+const MintConsensus = ({ web3Token, tokenData, refreshDataGrid }) => {
     const symbol = tokenData.find(x => x.name === "Symbol").value;
     const decimals = tokenData.find(x => x.name === "Decimals").value;
 
     const [data, setData] = useState({ arg1: '', arg2: '', errorMessage: '', successMessage: '', loading: false});
 
-    const onClickTransfer = async () => {
+    const onClickMint = async () => {
 
         setData({ ...data, loading: true});
         let errorMessage = "";
@@ -20,7 +20,7 @@ const Transfer = ({ web3Token, tokenData, refreshDataGrid }) => {
         try {
             const accounts = await web3.eth.getAccounts();
             const amountToSend = applyDecimals(data.arg2, decimals, "positive");
-            await web3Token.methods.transfer(data.arg1, amountToSend)
+            await web3Token.methods.mintConsensus(data.arg1, amountToSend)
                                     .send({ from: accounts[0] });
             successMessage = `Transfer successful. ${data.arg2} ${symbol} sent`;
             refreshDataGrid();
@@ -37,10 +37,11 @@ const Transfer = ({ web3Token, tokenData, refreshDataGrid }) => {
                 <Button 
                     variant="contained"
                     sx={{ m: 1 }}
-                    onClick={(e) => onClickTransfer()}
+                    onClick={(e) => onClickMint()}
                     disabled={data.loading}
+                    style={{backgroundColor: "#e5a84d"}}
                 >
-                    {data.loading ? <CircularProgress size={25} /> : "transfer(address to, uint256 value)"}
+                    {data.loading ? <CircularProgress size={25} /> : "MintConsensus(address to, uint256 amount)"}
                 </Button>
             </Grid>
             <Grid item xs={12}>
@@ -84,4 +85,4 @@ const Transfer = ({ web3Token, tokenData, refreshDataGrid }) => {
     )
 }
 
-export default Transfer
+export default MintConsensus

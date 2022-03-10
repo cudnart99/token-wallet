@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Grid, TextField, Button, Alert, CircularProgress } from '@mui/material';
-import Web3 from 'web3/dist/web3.min.js';
+import Web3 from "web3/dist/web3.min.js";
 const web3 = new Web3(window.ethereum);
 
 const { applyDecimals } = require('../../../utils/ethereumAPI')
@@ -39,6 +39,7 @@ const Approve = ({ web3Token, refreshDataGrid, tokenData }) => {
                     sx={{ m: 1 }}
                     onClick={(e) => onClickApprove()}
                     disabled={data.loading}
+                    style={{backgroundColor: "#956bd7"}}
                 >
                     {data.loading ? <CircularProgress size={25} /> : "approve(address spender, uint256 value)"}
                 </Button>
@@ -48,7 +49,7 @@ const Approve = ({ web3Token, refreshDataGrid, tokenData }) => {
                     label="Spender"
                     sx={{ m: 1, width: '50ch' }}
                     size="small"
-                    placeholder="0x0000000000000000000000000000000000000000"
+                    placeholder="0x"
                     onChange={(e) => setData({ ...data, arg1: e.target.value, errorMessage: '', successMessage: '' })}
                     InputLabelProps={{ shrink: true }}
                     disabled={data.loading}

@@ -1,87 +1,300 @@
 import { useState, useEffect } from "react";
-import {Grid, Typography, Box} from "@mui/material";
+import { Grid, Typography, Box, Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import BalanceOf from './ImportMenu/BalanceOf';
-import Transfer from './ImportMenu/Transfer';
-import Mint from './ImportMenu/Mint';
-import Approve from './ImportMenu/Approve';
+import "./style.css";
 
-import Web3 from 'web3/dist/web3.min.js'; // webpack < 5
-const web3 = new Web3(window.ethereum);
+import BalanceOf from "./ImportMenu/BalanceOf";
+import Transfer from "./ImportMenu/Transfer";
+import Mint from "./ImportMenu/Mint";
+import Approve from "./ImportMenu/Approve";
+import Burn from "./ImportMenu/Burn";
+import Web3 from "web3/dist/web3.min.js"; // webpack < 5
+import AddMinter from "./ImportMenu/AddMinter";
+import RemoveMinter from "./ImportMenu/RemoveMinter";
+import MinterConsensus from "./ImportMenu/MinterConsensus";
+import MinterReject from "./ImportMenu/MinterReject";
+import MintConsensus from "./ImportMenu/MintConsensus";
+import TransferFrom from "./ImportMenu/TransferFrom";
+import { useSelector } from "react-redux";
 
-const ERC20Token = require("./ERC20Token");
-const {applyDecimals} = require("../../utils/ethereumAPI");
+const ERC20Import = ({ tokenAddress }) => {
+    const ERC20Token = require("./ERC20Token");
+    const { applyDecimals } = require("../../utils/ethereumAPI");
 
-
-const ERC20Import = ({tokenAddress}) => {
+    const web3 = useSelector((state) => state.web3Library);
     const web3Token = new web3.eth.Contract(ERC20Token.abi, tokenAddress);
     const [tokenRefresh, setTokenRefresh] = useState(0);
     const [logMessage, setLogMessage] = useState("");
     const [tokenData, setTokenData] = useState([
-        { id: 0, name: 'Address', value: tokenAddress },
-        { id: 1, name: 'Name', value: '' },
-        { id: 2, name: 'Symbol', value: '' },
-        { id: 3, name: 'TotalSupply', value: '' },
-        { id: 4, name: 'Decimals', value: '' },
-        { id: 5, name: 'Current balance', value: '' }
-    ])
+        { id: 0, name: "Address", value: tokenAddress },
+        { id: 1, name: "Name", value: "" },
+        { id: 2, name: "Symbol", value: "" },
+        { id: 3, name: "TotalSupply", value: "" },
+        { id: 4, name: "Decimals", value: "" },
+        { id: 5, name: "Current balance", value: "" },
+        { id: 6, name: "Current address", value: "" },
+    ]);
+    const [accMinterList, setAccMinterList] = useState([]);
+    const [minterConsensusList, setMinterConsensusList] = useState([]);
 
     const columns = [
-        { field:'name', headerName: 'Token', width: 150},
-        { field:'value', headerName: 'Value', width: 500}
+        { field: "name", headerName: "Token", width: 150 },
+        { field: "value", headerName: "Value", width: 500 },
     ];
 
-    useEffect(() => {
-        async function fetchData() {
-            const web3Token = new web3.eth.Contract(ERC20Token.abi, tokenAddress);
-            const name = await web3Token.methods.name().call();
-            const symbol = await web3Token.methods.symbol().call();
-            const totalSupply = await web3Token.methods.totalSupply().call();
-            const decimals = await web3Token.methods.decimals().call();
+    const fetchData = async () => {
+        // web3Token = new web3.eth.Contract(
+        //     ERC20Token.abi,
+        //     tokenAddress
+        // );
 
-            const accounts = await web3.eth.getAccounts();
-            const currentBalance = await web3Token.methods.balanceOf(accounts[0]).call();
-            
-            setTokenData(tokenData => [
-                tokenData[0],
-                { ...tokenData[1], value: name },
-                { ...tokenData[2], value: symbol },
-                { ...tokenData[3], value: applyDecimals(totalSupply, decimals) },
-                { ...tokenData[4], value: decimals },
-                { ...tokenData[5], value: applyDecimals(currentBalance, decimals) }
-            ]);
+        const accounts = await web3.eth.getAccounts();
+        console.log("import", accounts);
+        console.log("web3Token", web3Token);
+        const name = await web3Token.methods.name().call();
+        const symbol = await web3Token.methods.symbol().call();
+        const totalSupply = await web3Token.methods.totalSupply().call();
+        const decimals = await web3Token.methods.decimals().call();
+
+        const currentBalance = await web3Token.methods
+            .balanceOf(accounts[0])
+            .call();
+        const listMinter = await web3Token.methods.getMinters().call();
+        console.log("accounts", accounts);
+        console.log("listMinter", listMinter);
+        setTokenData((tokenData) => [
+            tokenData[0],
+            { ...tokenData[1], value: name },
+            { ...tokenData[2], value: symbol },
+            {
+                ...tokenData[3],
+                value: applyDecimals(totalSupply, decimals),
+            },
+            { ...tokenData[4], value: decimals },
+            {
+                ...tokenData[5],
+                value: applyDecimals(currentBalance, decimals),
+            },
+            { ...tokenData[6], value: accounts[0] },
+        ]);
+
+        
+        var arr = [];
+        listMinter.map((x) => {
+            var temp = { status: 0, value: x };
+            arr.push(temp);
+        });
+        for (let i = 0; i < minterConsensusList.length; i++) {
+            arr.map((x) => {
+                if (x.value === minterConsensusList[i]) {
+                    x.status = 1;
+                }
+            });
         }
+       
+        setAccMinterList(arr);
+    }
+
+    useEffect(() => {
         fetchData();
-    }, [tokenAddress, tokenRefresh]);
+    }, [tokenRefresh]);
 
-    const refreshDataGrid = () => setTokenRefresh(t => ++t);
-
+    const refreshDataGrid = () => setTokenRefresh((t) => ++t);
+    const listConsensus = (x) => {
+        setMinterConsensusList([...minterConsensusList, x]);
+    };
+    const listReject = (x) => {
+        console.log("reject", x);
+        console.log("consensus", minterConsensusList);
+        var arr1 = [];
+        for (let i = 0; i < minterConsensusList.length; i++) {
+            if (minterConsensusList[i] !== x) {
+                arr1.push(minterConsensusList[i]);
+            }
+            console.log("arr", arr1);
+        }
+        setMinterConsensusList(arr1);
+    };
+    // const onConsensus = async () => {
+    //   const accounts = await web3.eth.getAccounts();
+    //   return await web3Token.methods.minterConsensus().send({ from: accounts[0] });
+    // };
     return (
         <div>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Typography variant="h6" noWrap component="div" sx={{ m: 1}}>
-                        Token infor
-                    </Typography>
-                </Grid>
-                <Grid item xs={12} sx={{height: '450px'}}>
-                    <DataGrid rows={tokenData} columns={columns}></DataGrid>
-                </Grid>
-            </Grid>
-            <Box border={1} sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}>
+            <div className="icon">
+                <img
+                    src="letter-i.png"
+                    style={{ width: "100%", height: "100%" }}
+                ></img>
+                <div className="infor">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography
+                                variant="h6"
+                                noWrap
+                                component="div"
+                                sx={{ m: 1 }}
+                            >
+                                Token infor
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} sx={{ height: "500px" }}>
+                            <DataGrid
+                                rows={tokenData}
+                                columns={columns}
+                            ></DataGrid>
+                        </Grid>
+                        <Button
+                            style={{
+                                backgroundColor: "antiquewhite",
+                                position: "relative",
+                                left: "20px",
+                                top: "5px",
+                            }}
+                            onClick={() => setTokenRefresh((t) => ++t)}
+                        >
+                            Refresh
+                        </Button>
+                        <Grid item xs={12} sx={{ height: "150px" }}>
+                            Account minter
+                            <div>
+                                {accMinterList.map((x) => {
+                                    if (x.status) {
+                                        return (
+                                            <li
+                                                key={x.value}
+                                                style={{ color: "green" }}
+                                            >
+                                                {x.value}
+                                            </li>
+                                        );
+                                    } else {
+                                        return (
+                                            <li
+                                                key={x.value}
+                                                style={{ color: "red" }}
+                                            >
+                                                {x.value}
+                                            </li>
+                                        );
+                                    }
+                                })}
+                            </div>
+                        </Grid>
+                    </Grid>
+                </div>
+            </div>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <Burn
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
                 <BalanceOf web3Token={web3Token} tokenData={tokenData} />
             </Box>
-            <Box border={1} sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}>
-                <Transfer web3Token={web3Token} tokenData={tokenData} refreshDataGrid={refreshDataGrid}/>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <Transfer
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
             </Box>
-            <Box border={1} sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}>
-                <Mint web3Token={web3Token} tokenData={tokenData} refreshDataGrid={refreshDataGrid}/>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <Mint
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
             </Box>
-            <Box border={1} sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}>
-                <Approve web3Token={web3Token} refreshDataGrid={refreshDataGrid} tokenData={tokenData} />
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <AddMinter
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    accMinterList={accMinterList}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <RemoveMinter
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <MinterConsensus
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    listConsensus={listConsensus}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <MinterReject
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    listReject={listReject}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <MintConsensus
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <Approve
+                    web3Token={web3Token}
+                    refreshDataGrid={refreshDataGrid}
+                    tokenData={tokenData}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <TransferFrom
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
             </Box>
         </div>
-    )
-}
+    );
+};
 
-export default ERC20Import
+export default ERC20Import;

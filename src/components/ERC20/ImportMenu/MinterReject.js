@@ -5,13 +5,13 @@ const web3 = new Web3(window.ethereum);
 
 const { applyDecimals } = require('../../../utils/ethereumAPI');
 
-const TransferFrom = ({ web3Token, tokenData, refreshDataGrid }) => {
-    const symbol = tokenData.find(x => x.name === "Symbol").value;
-    const decimals = tokenData.find(x => x.name === "Decimals").value;
+const MinterReject = ({ web3Token, tokenData, listReject, refreshDataGrid }) => {
+    // const symbol = tokenData.find(x => x.name === "Symbol").value;
+    // const decimals = tokenData.find(x => x.name === "Decimals").value;
 
-    const [data, setData] = useState({ arg1: '', arg2: '', arg3: '', errorMessage: '', successMessage: '', loading: false});
+    const [data, setData] = useState({ arg1: '', arg2: '', errorMessage: '', successMessage: '', loading: false});
 
-    const onClickTransfer = async () => {
+    const onClickMint = async () => {
 
         setData({ ...data, loading: true});
         let errorMessage = "";
@@ -19,10 +19,10 @@ const TransferFrom = ({ web3Token, tokenData, refreshDataGrid }) => {
         
         try {
             const accounts = await web3.eth.getAccounts();
-            const amountToSend = applyDecimals(data.arg3, decimals, "positive");
-            await web3Token.methods.transferFrom(data.arg1, data.arg2, amountToSend)
-                                    .send({ from: accounts[0] });
-            successMessage = `Transfer successful. ${data.arg3} ${symbol} sent`;
+            // const amountToSend = applyDecimals(data.arg2, decimals, "positive");
+            await web3Token.methods.minterReject().send({ from: accounts[0] });
+            successMessage = `Reject successful.`;
+            listReject(accounts[0]);
             refreshDataGrid();
         } catch (error) {
             errorMessage = error.message;
@@ -37,29 +37,20 @@ const TransferFrom = ({ web3Token, tokenData, refreshDataGrid }) => {
                 <Button 
                     variant="contained"
                     sx={{ m: 1 }}
-                    onClick={(e) => onClickTransfer()}
+                    onClick={(e) => onClickMint()}
                     disabled={data.loading}
-                    style={{backgroundColor: "#956bd7"}}
+                    style={{backgroundColor: "#e5a84d"}}
                 >
-                    {data.loading ? <CircularProgress size={25} /> : "transferFrom(from, to, amount)"}
+                    {data.loading ? <CircularProgress size={25} /> : "Minter Reject"}
                 </Button>
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
                 <TextField 
-                    label="From"
+                    label="Minter Address"
                     sx={{ m: 1, width: '50ch' }}
                     size="small"
                     placeholder="0x"
                     onChange={(e) => setData({ ...data, arg1: e.target.value, errorMessage: '', successMessage: ''})}
-                    InputLabelProps={{ shrink: true }}
-                    disabled={data.loading}
-                />
-                <TextField 
-                    label="To"
-                    sx={{ m: 1, width: '50ch' }}
-                    size="small"
-                    placeholder="0x"
-                    onChange={(e) => setData({ ...data, arg2: e.target.value, errorMessage: '', successMessage: ''})}
                     InputLabelProps={{ shrink: true }}
                     disabled={data.loading}
                 />
@@ -69,11 +60,11 @@ const TransferFrom = ({ web3Token, tokenData, refreshDataGrid }) => {
                     size="small"
                     placeholder="1"
                     type="number"
-                    onChange={(e) => setData({ ...data, arg3: e.target.value, errorMessage: '', successMessage: ''})}
+                    onChange={(e) => setData({ ...data, arg2: e.target.value, errorMessage: '', successMessage: ''})}
                     InputLabelProps={{ shrink: true }}
                     disabed={data.loading}
                 />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
                 {data.errorMessage && 
                     <Alert 
@@ -94,4 +85,4 @@ const TransferFrom = ({ web3Token, tokenData, refreshDataGrid }) => {
     )
 }
 
-export default TransferFrom
+export default MinterReject

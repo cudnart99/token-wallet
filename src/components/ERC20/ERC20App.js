@@ -18,6 +18,10 @@ const ERC20App = () => {
         setTokenAddress(address);
         setMenu(Menu.Import);
     }
+    const onClickLogin = (address) => {
+        setTokenAddress(address);
+        setMenu(Menu.Import);
+    }
     return (
         <div>
             {menu !== Menu.Main &&
@@ -27,7 +31,7 @@ const ERC20App = () => {
                     </Link>
                 </Box>
             }
-            {menu === Menu.Main && <ERC20MainMenu onClickCreate={onClickCreate}/>}
+            {menu === Menu.Main && <ERC20MainMenu onClickCreate={onClickCreate} onClickLogin={onClickLogin}/>}
             {menu === Menu.Create && <ERC20Create importToken={importToken}/>}
             {menu === Menu.Import && <ERC20Import tokenAddress={tokenAddress}/>}
         </div>

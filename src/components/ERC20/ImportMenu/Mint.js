@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Grid, TextField, Button, Alert, CircularProgress } from '@mui/material'
-import Web3 from "web3/dist/web3.min.js";
-const web3 = new Web3(window.ethereum);
+// import Web3 from "web3/dist/web3.min.js";
+// const web3 = new Web3(window.ethereum);
+import { useSelector } from 'react-redux';
 
-const { applyDecimals } = require('../../../utils/ethereumAPI');
 
 const Mint = ({ web3Token, tokenData, refreshDataGrid }) => {
+    const { applyDecimals } = require('../../../utils/ethereumAPI');
+    const web3 = useSelector((state) => state.web3Library);
     const symbol = tokenData.find(x => x.name === "Symbol").value;
     const decimals = tokenData.find(x => x.name === "Decimals").value;
 

@@ -6,7 +6,7 @@ import {
     Alert,
     CircularProgress,
 } from "@mui/material";
-import Web3 from "web3/dist/web3.min.js";
+// import Web3 from "web3/dist/web3.min.js";
 import { useSelector } from "react-redux";
 
 const Burn = ({ web3Token, tokenData, refreshDataGrid }) => {

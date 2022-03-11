@@ -177,7 +177,7 @@ const ERC20MainMenu = ({ onClickCreate, onClickLogin }) => {
                         sx={{ m: 1 }}
                         onClick={(e) =>
                             onClickLogin(
-                                "0xEA1bFdFBDBa99BBFc6834880d449427452286e70"
+                                "0xFFE346cae1d55F578F64aB07cd7560752b0F1A70"
                             )
                         }
                         disabled={data.loading}

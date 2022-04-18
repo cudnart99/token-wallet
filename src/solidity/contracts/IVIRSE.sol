@@ -159,7 +159,7 @@ contract IVIRSE is ERC20, Ownable {
             minterConsent[_minter] = false;
         }
     }
-
+// ----------------------------------------------------------------------------------------------------
     function approveList(
         address[] memory _listAcc,
         uint256[] memory _listAmount
@@ -169,4 +169,44 @@ contract IVIRSE is ERC20, Ownable {
             approve(_listAcc[i], _listAmount[i]);
         }
     }
+
+     function transferList(address[] memory _listAcc, uint256[]  memory _listAmount) public {
+        require (_listAcc.length ==_listAmount.length, "not enough arguments");
+        for (uint256 i = 0; i < _listAcc.length; i++ ) {
+           transfer(_listAcc[i], _listAmount[i]);
+        }
+    }
+
+// --------------------------------- lock-time ----------------------------------------------
+    struct accountData {
+        uint256 balanceLock;
+        uint256 releaseTime;
+    }
+
+    mapping (address => accountData) accounts;
+
+    function payIn(address ng_nhan, uint256 amounts, uint256 lockTimes) public onlyOwner {
+        require (amounts > 0 ,"amount > 0 ");
+        accounts[ng_nhan].balanceLock = amounts;
+        accounts[ng_nhan].releaseTime = block.timestamp +lockTimes;
+    }
+    function payOut() public {
+        require(accounts[msg.sender].balanceLock != 0, "can't approve");
+        require(checkTimeLock(), "can't unlock");
+        _mint(msg.sender, accounts[msg.sender].balanceLock);
+        
+        accounts[msg.sender].balanceLock = 0;
+        accounts[msg.sender].releaseTime = 0;
+    }
+
+    function checkTimeLock() public view returns (bool) {
+        // require(accounts[msg.sender].balanceLock != 0, "ko được cập quyền");
+        if (accounts[msg.sender].releaseTime < block.timestamp) {
+        
+        return true;
+    }
+    return false;
+    }
+// --------------------------------- lock-time ----------------------------------------------
+
 }

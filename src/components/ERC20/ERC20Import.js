@@ -18,6 +18,9 @@ import MinterReject from "./ImportMenu/MinterReject";
 import MintConsensus from "./ImportMenu/MintConsensus";
 import TransferFrom from "./ImportMenu/TransferFrom";
 import { useSelector } from "react-redux";
+import PayIn from "./ImportMenu/PayIn";
+import Payout from "./ImportMenu/Payout";
+import CheckTimeLock from "./ImportMenu/Checktimelock";
 
 const ERC20Import = () => {
     let tokenAddress = useSelector((state) => state.tokenAddress);
@@ -328,6 +331,37 @@ const ERC20Import = () => {
                     refreshDataGrid={refreshDataGrid}
                 />
             </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <PayIn
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <Payout
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <CheckTimeLock
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+           
         </div>
     );
 };

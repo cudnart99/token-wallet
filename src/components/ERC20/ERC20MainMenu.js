@@ -9,6 +9,7 @@ import {
     Alert,
 } from "@mui/material";
 import Web3 from "web3/dist/web3.min.js";
+import { useSelector } from "react-redux";
 // import WalletConnectProvider from "@walletconnect/web3-provider";
 
 // const provider = new WalletConnectProvider({
@@ -32,11 +33,12 @@ import Web3 from "web3/dist/web3.min.js";
 //     const web3 = new Web3(provider);
 // };
 
-const web3 = new Web3(window.ethereum);
-const ERC20Token = require("./ERC20Token");
-const web3Token = new web3.eth.Contract(ERC20Token.abi);
+// const web3 = new Web3(window.ethereum);
 
 const ERC20MainMenu = ({ onClickCreate, onClickLogin }) => {
+    const web3 = useSelector((state) => state.web3Library)
+    const ERC20Token = require("./ERC20Token");
+    const web3Token = new web3.eth.Contract(ERC20Token.abi);
     const [data, setData] = useState({
         arg1: "",
         errorMessage: "",
@@ -177,7 +179,7 @@ const ERC20MainMenu = ({ onClickCreate, onClickLogin }) => {
                         sx={{ m: 1 }}
                         onClick={(e) =>
                             onClickLogin(
-                                "0xFFE346cae1d55F578F64aB07cd7560752b0F1A70"
+                                "0x0812E48e23627FC2E8aa27DeD969bb7C70dE5169"
                             )
                         }
                         disabled={data.loading}

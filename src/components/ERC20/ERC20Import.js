@@ -5,6 +5,8 @@ import "./style.css";
 
 import BalanceOf from "./ImportMenu/BalanceOf";
 import Transfer from "./ImportMenu/Transfer";
+import ApproveList from "./ImportMenu/ApproveList";
+import Allowance from "./ImportMenu/Allowance";
 import Mint from "./ImportMenu/Mint";
 import Approve from "./ImportMenu/Approve";
 import Burn from "./ImportMenu/Burn";
@@ -17,12 +19,16 @@ import MintConsensus from "./ImportMenu/MintConsensus";
 import TransferFrom from "./ImportMenu/TransferFrom";
 import { useSelector } from "react-redux";
 
-const ERC20Import = ({ tokenAddress }) => {
+const ERC20Import = () => {
+    let tokenAddress = useSelector((state) => state.tokenAddress);
+    // console.log("tokenAddress", tokenAddress);
     const ERC20Token = require("./ERC20Token");
     const { applyDecimals } = require("../../utils/ethereumAPI");
 
     const web3 = useSelector((state) => state.web3Library);
-    const web3Token = new web3.eth.Contract(ERC20Token.abi, tokenAddress);
+    let web3Token = new web3.eth.Contract(ERC20Token.abi, tokenAddress);
+    // var netWork;
+    
     const [tokenRefresh, setTokenRefresh] = useState(0);
     const [logMessage, setLogMessage] = useState("");
     const [tokenData, setTokenData] = useState([
@@ -36,6 +42,7 @@ const ERC20Import = ({ tokenAddress }) => {
     ]);
     const [accMinterList, setAccMinterList] = useState([]);
     const [minterConsensusList, setMinterConsensusList] = useState([]);
+    const [netWork, setNetWork] = useState("");
 
     const columns = [
         { field: "name", headerName: "Token", width: 150 },
@@ -47,6 +54,11 @@ const ERC20Import = ({ tokenAddress }) => {
         //     ERC20Token.abi,
         //     tokenAddress
         // );
+        web3.eth.net.getNetworkType((err, kq) => {
+            // console.log("err---", err);
+            // console.log("kq---", kq);
+            setNetWork(kq);
+        });
 
         const accounts = await web3.eth.getAccounts();
         console.log("import", accounts);
@@ -63,7 +75,8 @@ const ERC20Import = ({ tokenAddress }) => {
         console.log("accounts", accounts);
         console.log("listMinter", listMinter);
         setTokenData((tokenData) => [
-            tokenData[0],
+            // tokenData[0], 
+            { ...tokenData[0], value: `${tokenAddress} (${netWork})` },
             { ...tokenData[1], value: name },
             { ...tokenData[2], value: symbol },
             {
@@ -96,8 +109,10 @@ const ERC20Import = ({ tokenAddress }) => {
     }
 
     useEffect(() => {
+        // web3Token = new web3.eth.Contract(ERC20Token.abi, tokenAddress);
         fetchData();
-    }, [tokenRefresh]);
+        // console.log("abc----", netWork);
+    }, [tokenRefresh, tokenAddress]);
 
     const refreshDataGrid = () => setTokenRefresh((t) => ++t);
     const listConsensus = (x) => {
@@ -205,6 +220,26 @@ const ERC20Import = ({ tokenAddress }) => {
                 sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
             >
                 <Transfer
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <ApproveList
+                    web3Token={web3Token}
+                    tokenData={tokenData}
+                    refreshDataGrid={refreshDataGrid}
+                />
+            </Box>
+            <Box
+                border={1}
+                sx={{ mt: 2, borderRadius: 1, borderColor: "LightGray" }}
+            >
+                <Allowance
                     web3Token={web3Token}
                     tokenData={tokenData}
                     refreshDataGrid={refreshDataGrid}

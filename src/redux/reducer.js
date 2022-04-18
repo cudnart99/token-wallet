@@ -2,6 +2,8 @@ const initState = {
     web3Library: null,
     web3Account: "",
     walletConnectProvider: null,
+    chainId: null,
+    tokenAddress: "",
 };
 
 const rootReducer = (state = initState, action) => {
@@ -21,6 +23,16 @@ const rootReducer = (state = initState, action) => {
             return {
                 ...state,
                 walletConnectProvider: action.payload,
+            };
+        case "addChainId":
+            return {
+                ...state,
+                chainId: action.payload,
+            };
+        case "addTokenAddress":
+            return {
+                ...state,
+                tokenAddress: action.payload,
             };
 
         default:

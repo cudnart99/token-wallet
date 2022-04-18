@@ -4,6 +4,10 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import NativeSelect from "@mui/material/NativeSelect";
 import "./style.css";
+import { useDispatch } from "react-redux";
+import {addChainId, addTokenAddress} from "../../redux/actions"
+import {address} from "../TokenAddress/tokenAddress";
+
 
 const networks = {
     bsc: {
@@ -126,8 +130,19 @@ const changeNetwork = async ({ networkName, setError }) => {
     }
 };
 
+const checkTokenAddress = (chainId) => {
+    let tempt = "";
+    address.map(e => {
+        if(e.chainId == chainId) {
+            tempt = e.ad;
+        }
+    });
+    return tempt;
+}
+
 const ConnectNetwork = () => {
     const [error, setError] = useState();
+    const dispatch = useDispatch();
 
     const handleNetworkSwitch = async (networkName) => {
         setError();
@@ -149,14 +164,20 @@ const ConnectNetwork = () => {
             case "20":
                 console.log("Ropsten");
                 handleNetworkSwitch("Ropsten");
+                dispatch(addChainId(3));
+                dispatch(addTokenAddress(checkTokenAddress(3)));
                 break;
             case "30":
                 console.log("Rinkeby");
                 handleNetworkSwitch("Rinkeby");
+                dispatch(addChainId(4));
+                dispatch(addTokenAddress(checkTokenAddress(4)));
                 break;
             case "40":
                 console.log("Kovan");
                 handleNetworkSwitch("Kovan");
+                dispatch(addChainId(42));
+                dispatch(addTokenAddress(checkTokenAddress(42)));
                 break;
             default:
                 break;

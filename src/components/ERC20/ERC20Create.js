@@ -9,7 +9,7 @@ import {
     Link, Box
 } from "@mui/material";
 import Web3 from "web3/dist/web3.min.js";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const ERC20Create = ({ importToken }) => {
     const [tokenName, setTokenName] = useState("");
@@ -27,9 +27,12 @@ const ERC20Create = ({ importToken }) => {
     const { applyDecimals } = require("../../utils/ethereumAPI");
     const web3Token = new web3.eth.Contract(ERC20Token.abi);
 
+    const dispatch = useDispatch();
+
     const onClickAction = async () => {
         if (successMessage) {
-            importToken(web3Token.options.address);
+            // importToken(web3Token.options.address);
+            // dispatch(addTokenAddress())
             return;
         }
         setLoading(true);

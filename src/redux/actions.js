@@ -18,3 +18,17 @@ export const addWalletConnectProvider = (data) => {
         payload: data
     }
 }
+
+export const addChainId = (data) => {
+    return {
+        type: 'addChainId',
+        payload: data
+    }
+}
+
+export const addTokenAddress = (data) => {
+    return {
+        type: 'addTokenAddress',
+        payload: data
+    }
+}

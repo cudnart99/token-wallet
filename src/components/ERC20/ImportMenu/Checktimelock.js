@@ -1,85 +1,62 @@
 import { useState } from 'react'
-import { Grid, TextField, Button, Alert, CircularProgress } from '@mui/material'
-// import Web3 from "web3/dist/web3.min.js";
-// const web3 = new Web3(window.ethereum);
-import { useSelector } from 'react-redux';
+import { Grid, TextField, Button, Alert, Typography } from '@mui/material'
+import { gridColumnsTotalWidthSelector } from '@mui/x-data-grid';
 
+const { applyDecimals } = require('../../../utils/ethereumAPI');
 
-const CheckTimeLock = ({ web3Token, tokenData, refreshDataGrid }) => {
-    const web3 = useSelector((state) => state.web3Library);
-    const { applyDecimals } = require('../../../utils/ethereumAPI');
-    // const symbol = tokenData.find(x => x.name === "Symbol").value;
-    // const decimals = tokenData.find(x => x.name === "Decimals").value;
+const CheckTimeLock = ({ web3Token, tokenData }) => {
+    const decimals = tokenData.find(x => x.name === "Decimals").value;
+    const [data, setData] = useState({ arg1: '', errorMessage: '', result: '' });
 
-    const [data, setData] = useState({ arg1: '', arg2: '', errorMessage: '', successMessage: '', loading: false});
-
-    const onClickMint = async () => {
-
-        setData({ ...data, loading: true});
-        let errorMessage = "";
-        let successMessage = "";
-        
+    const onClickBalanceOf = async () => {
+        let rawBalance;
         try {
-            const accounts = await web3.eth.getAccounts();
-            // const amountToSend = applyDecimals(data.arg2, decimals, "positive");
-            const check = await web3Token.methods.checkTimeLock().call();
-            successMessage = `time lock status : ${check} `;
-            // listReject(accounts[0]);
-            refreshDataGrid();
+            rawBalance = await web3Token.methods.checkTimeLock(data.arg1).call();
+            // console.log(rawBalance,"rawBalance");
         } catch (error) {
-            errorMessage = error.message;
+            setData({ ...data, errorMessage: error.message });
+            return;
         }
-
-        setData({ ...data, loading: false, errorMessage, successMessage });
-    }
+        setData({ ...data, result: rawBalance });
+    };
 
     return (
         <Grid container>
             <Grid item xs={12}>
-                <Button 
+                <Button
                     variant="contained"
                     sx={{ m: 1 }}
-                    onClick={(e) => onClickMint()}
-                    disabled={data.loading}
-                    style={{backgroundColor: "#e5a84d"}}
+                    onClick={(e) => onClickBalanceOf()}
                 >
-                    {data.loading ? <CircularProgress size={25} /> : "Checktimelock"}
+                    Check Time Lock
                 </Button>
+                <Typography variant="subtitle1" noWrap display="inline" component="div" sx={{ m: 1 }}>
+                    Result:
+                </Typography> giây
+                <TextField
+                    sx={{ m: 1, width: '30ch' }}
+                    size="large"
+                    value={data.result}
+                    InputLabelProps={{ shrink: true }}
+                    variant="standard"
+                />
             </Grid>
-            {/* <Grid item xs={12}>
-                <TextField 
-                    label="Minter Address"
+            <Grid item xs={12}>
+                <TextField
+                    label="Owner"
                     sx={{ m: 1, width: '50ch' }}
                     size="small"
                     placeholder="0x"
-                    onChange={(e) => setData({ ...data, arg1: e.target.value, errorMessage: '', successMessage: ''})}
+                    onChange={(e) => setData({ arg1: e.target.value, result: '', errorMessage: '' })}
                     InputLabelProps={{ shrink: true }}
-                    disabled={data.loading}
                 />
-                <TextField 
-                    label="Value"
-                    sx={{ m: 1, width: '30ch' }}
-                    size="small"
-                    placeholder="1"
-                    type="number"
-                    onChange={(e) => setData({ ...data, arg2: e.target.value, errorMessage: '', successMessage: ''})}
-                    InputLabelProps={{ shrink: true }}
-                    disabed={data.loading}
-                />
-            </Grid> */}
+            </Grid>
             <Grid item xs={12}>
-                {data.errorMessage && 
-                    <Alert 
-                        severity="error" 
-                        onClose={() => setData({ ...data, errorMessage: ""})}>
-                        {data.errorMessage}
-                    </Alert>
-                }
-                {data.successMessage &&
+                {data.errorMessage &&
                     <Alert
-                        severity="success"
-                        onClose={() => setData({ ...data, successMessage: ""})}>
-                        {data.successMessage}
+                        severity="error"
+                        onClose={() => setData({ ...data, errorMessage: "" })}>
+                        {data.errorMessage}
                     </Alert>
                 }
             </Grid>

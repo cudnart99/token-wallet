@@ -11,10 +11,12 @@ const BalanceOf = ({ web3Token, tokenData }) => {
         let rawBalance = '';
         try {
             rawBalance= await web3Token.methods.balanceOf(data.arg1).call();
+            console.log(rawBalance,"balance12345");
         } catch (error) {
             setData({ ...data, errorMessage: error.message });
             return;
         }
+
         const adjustedBalance = applyDecimals(rawBalance, decimals);
         setData({ ...data, result: adjustedBalance });
     };

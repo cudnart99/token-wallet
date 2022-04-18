@@ -186,26 +186,28 @@ contract IVIRSE is ERC20, Ownable {
     mapping (address => accountData) accounts;
 
     function payIn(address ng_nhan, uint256 amounts, uint256 lockTimes) public onlyOwner {
-        require (amounts > 0 ,"amount > 0 ");
+        require (amounts > 0 ,"amount >0 ");
         accounts[ng_nhan].balanceLock = amounts;
-        accounts[ng_nhan].releaseTime = block.timestamp +lockTimes;
+        accounts[ng_nhan].releaseTime = block.timestamp + lockTimes;
     }
     function payOut() public {
         require(accounts[msg.sender].balanceLock != 0, "can't approve");
-        require(checkTimeLock(), "can't unlock");
+        require(checkTimeLock(msg.sender) <= 0, "can't unlock");
         _mint(msg.sender, accounts[msg.sender].balanceLock);
         
         accounts[msg.sender].balanceLock = 0;
         accounts[msg.sender].releaseTime = 0;
     }
 
-    function checkTimeLock() public view returns (bool) {
+    function checkTimeLock(address ng_check) public view virtual returns (uint256) {
         // require(accounts[msg.sender].balanceLock != 0, "ko được cập quyền");
-        if (accounts[msg.sender].releaseTime < block.timestamp) {
-        
-        return true;
-    }
-    return false;
+    //     if (accounts[ng_check].releaseTime < block.timestamp) {
+    //     check = true;
+    // }else{
+    //     check = false;
+    //    time = block.timestamp - accounts[ng_check].releaseTime;
+    // }
+    return block.timestamp - accounts[ng_check].releaseTime;
     }
 // --------------------------------- lock-time ----------------------------------------------
 

@@ -33,7 +33,7 @@ const ERC20App = () => {
     // };
     const onClickLogin = async (address) => {
         // setTokenAddress(address);
-        await dispatch(addTokenAddress("0x2484b4598875662c3A7Ba4d1C83B8BCC3CDaC111"));
+        await dispatch(addTokenAddress("0x94117f5ffE9BDbb3848BaE58FaB41430DD817363"));
         // console.log("test", useSelector((state) => state.tokenAddress));
         setMenu(Menu.Import);
     };

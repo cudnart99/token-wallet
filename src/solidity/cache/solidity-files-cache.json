@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "C:\\Users\\Duc Tran\\Desktop\\Work\\TokenWallet\\src\\solidity\\contracts\\IVIRSE.sol": {
-      "lastModificationDate": 1650274625817,
-      "contentHash": "48a725364f9b61c8efafd9cbc9ef8809",
+      "lastModificationDate": 1650278175299,
+      "contentHash": "3e0ae3ef3b9d0445e18717d027217fda",
       "sourceName": "src/solidity/contracts/IVIRSE.sol",
       "solcConfig": {
         "version": "0.8.4",

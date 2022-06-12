@@ -156,23 +156,23 @@ const ConnectNetwork = () => {
     const checkOption = (e) => {
         console.log(e.target.value);
         switch (e.target.value) {
-            case "10":
-                console.log("Mainnet");
-                handleNetworkSwitch("Mainnet");
-                // handleNetworkSwitch("bsc");
-                break;
-            case "20":
-                console.log("Ropsten");
-                handleNetworkSwitch("Ropsten");
-                dispatch(addChainId(3));
-                dispatch(addTokenAddress(checkTokenAddress(3)));
-                break;
-            case "30":
-                console.log("Rinkeby");
-                handleNetworkSwitch("Rinkeby");
-                dispatch(addChainId(4));
-                dispatch(addTokenAddress(checkTokenAddress(4)));
-                break;
+            // case "10":
+            //     console.log("Mainnet");
+            //     handleNetworkSwitch("Mainnet");
+            //     // handleNetworkSwitch("bsc");
+            //     break;
+            // case "20":
+            //     console.log("Ropsten");
+            //     handleNetworkSwitch("Ropsten");
+            //     dispatch(addChainId(3));
+            //     dispatch(addTokenAddress(checkTokenAddress(3)));
+            //     break;
+            // case "30":
+            //     console.log("Rinkeby");
+            //     handleNetworkSwitch("Rinkeby");
+            //     dispatch(addChainId(4));
+            //     dispatch(addTokenAddress(checkTokenAddress(4)));
+            //     break;
             case "40":
                 console.log("Kovan");
                 handleNetworkSwitch("Kovan");
@@ -199,16 +199,16 @@ const ConnectNetwork = () => {
                     Network
                 </InputLabel>
                 <NativeSelect
-                    defaultValue={20}
+                    defaultValue={40}
                     inputProps={{
                         name: "age",
                         id: "uncontrolled-native",
                     }}
                     onChange={checkOption}
                 >
-                    <option value={10}>Ethereum</option>
+                    {/* <option value={10}>Ethereum</option>
                     <option value={20}>Ropsten Testnet</option>
-                    <option value={30}>Rinkeby Testnet</option>
+                    <option value={30}>Rinkeby Testnet</option> */}
                     <option value={40}>Kovan Testnet</option>
                 </NativeSelect>
             </FormControl>

@@ -20,7 +20,7 @@ const SetStatusAttack = ({ web3ZombieContract, refreshDataGrid }) => {
     loading: false,
   });
 
-  const onClickAttack = async () => {
+  const onClick = async () => {
     setData({ ...data, loading: true });
     let errorMessage = "";
     let successMessage = "";
@@ -29,29 +29,9 @@ const SetStatusAttack = ({ web3ZombieContract, refreshDataGrid }) => {
       const accounts = await web3.eth.getAccounts();
       // const amountToSend = applyDecimals(data.arg2, decimals, "positive");
       await web3ZombieContract.methods
-        .setStatusAttack(data.arg1, true)
+        .setStatusAttack(data.arg1)
         .send({ from: accounts[0] });
-      successMessage = `Change status to attack successful.`;
-      refreshDataGrid();
-    } catch (error) {
-      errorMessage = error.message;
-    }
-
-    setData({ ...data, loading: false, errorMessage, successMessage });
-  };
-
-  const onClickDefense = async () => {
-    setData({ ...data, loading: true });
-    let errorMessage = "";
-    let successMessage = "";
-
-    try {
-      const accounts = await web3.eth.getAccounts();
-      // const amountToSend = applyDecimals(data.arg2, decimals, "positive");
-      await web3ZombieContract.methods
-        .setStatusAttack(data.arg1, false)
-        .send({ from: accounts[0] });
-      successMessage = `Change status to defense successful.`;
+      successMessage = `Change status successful.`;
       refreshDataGrid();
     } catch (error) {
       errorMessage = error.message;
@@ -66,28 +46,11 @@ const SetStatusAttack = ({ web3ZombieContract, refreshDataGrid }) => {
         <Button
           variant="contained"
           sx={{ m: 1 }}
-          onClick={(e) => onClickAttack()}
+          onClick={(e) => onClick()}
           disabled={data.loading}
           style={{ backgroundColor: "#e5a84d" }}
         >
-          {data.loading ? (
-            <CircularProgress size={25} />
-          ) : (
-            "Change status to attack"
-          )}
-        </Button>
-        <Button
-          variant="contained"
-          sx={{ m: 1 }}
-          onClick={(e) => onClickDefense()}
-          disabled={data.loading}
-          style={{ backgroundColor: "#e5a84d" }}
-        >
-          {data.loading ? (
-            <CircularProgress size={25} />
-          ) : (
-            "Change status to defense"
-          )}
+          {data.loading ? <CircularProgress size={25} /> : "Change status"}
         </Button>
       </Grid>
       <Grid item xs={12}>

@@ -28,7 +28,7 @@ const SetPurchaseZombie = ({ web3ZombieContract, refreshDataGrid }) => {
 
     try {
       const accounts = await web3.eth.getAccounts();
-      const amount = applyDecimals(data.arg1, "", "positive");
+      const amount = applyDecimals(data.arg1, "18", "positive");
       await web3ZombieContract.methods
         .setPurchaseZombie(amount)
         .send({ from: accounts[0] });

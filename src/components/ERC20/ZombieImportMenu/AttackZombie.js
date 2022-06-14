@@ -20,8 +20,6 @@ const AttackZombie = ({ web3ZombieContract, refreshDataGrid }) => {
     successMessage: "",
     loading: false,
   });
-  console.log(data.arg1, "data.arg1-Change");
-  console.log(data.arg2, "data.arg2-Change");
 
   const onClick = async () => {
     setData({ ...data, loading: true });
@@ -30,14 +28,13 @@ const AttackZombie = ({ web3ZombieContract, refreshDataGrid }) => {
 
     try {
       const accounts = await web3.eth.getAccounts();
-      console.log(data.arg1, "data.arg1");
-      console.log(data.arg2, "data.arg2");
       //   const data.arg1 = parseInt(data.arg1);
       // const amountToSend = applyDecimals(data.arg2, decimals, "positive");
       let results = await web3ZombieContract.methods
         .attackZombie(parseInt(data.arg1), parseInt(data.arg2))
         .send({ from: accounts[0] });
-      if (results) {
+      console.log(results,"results 123");
+      if (results === true) {
         successMessage = `You win , achieve 5 IVI`;
       } else {
         errorMessage = "You lose , your zombie cant attack in 5 minutes";

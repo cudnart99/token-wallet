@@ -40,7 +40,7 @@ const ERC20Import = () => {
 
   // Import contract Zombie ===============================================================================
   const ZombieABI = require("./ZombieExport");
-  const ZombieContractAddress = "0x6d9Ff160Ba6c748B608060c36F9Dd5BF9747675e";
+  const ZombieContractAddress = "0xA90Ba829A63Db662Ec4E15D057D00d473867D6B2";
   let web3ZombieContract = new web3.eth.Contract(
     ZombieABI,
     ZombieContractAddress
@@ -86,13 +86,14 @@ const ERC20Import = () => {
     const symbol = await web3Token.methods.symbol().call();
     const totalSupply = await web3Token.methods.totalSupply().call();
     const decimals = await web3Token.methods.decimals().call();
+    console.log(decimals,"helo12");
 
     const currentBalance = await web3Token.methods
       .balanceOf(accounts[0])
       .call();
     const listMinter = await web3Token.methods.getMinters().call();
-    console.log("accounts", accounts);
-    console.log("listMinter", listMinter);
+    // console.log("accounts", accounts);
+    // console.log("listMinter", listMinter);
     setTokenData((tokenData) => [
       // tokenData[0],
       { ...tokenData[0], value: `${tokenAddress} (${netWork})` },

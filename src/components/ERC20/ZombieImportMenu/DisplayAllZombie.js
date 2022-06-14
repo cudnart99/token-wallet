@@ -18,6 +18,7 @@ const DisplayAllZombie = ({ web3ZombieContract, refreshDataGrid }) => {
     successMessage: "",
     loading: false,
   });
+  const [zombieInfo, setZombieInfo] = useState([]);
 
   const onClick = async () => {
     setData({ ...data, loading: true });
@@ -32,6 +33,7 @@ const DisplayAllZombie = ({ web3ZombieContract, refreshDataGrid }) => {
         .call();
       console.log(results, "helo123");
       successMessage = "Display successfull";
+      setZombieInfo(results);
       refreshDataGrid();
     } catch (error) {
       errorMessage = error.message;
@@ -63,12 +65,30 @@ const DisplayAllZombie = ({ web3ZombieContract, refreshDataGrid }) => {
           </Alert>
         )}
         {data.successMessage && (
-          <Alert
-            severity="success"
-            onClose={() => setData({ ...data, successMessage: "" })}
-          >
-            {data.successMessage}
-          </Alert>
+          <>
+            <Alert
+              severity="success"
+              onClose={() => setData({ ...data, successMessage: "" })}
+            >
+              {data.successMessage}
+            </Alert>
+            {zombieInfo.map((item, index) => {
+              return (
+                <div>
+                  <div>Zombie id : {index}</div>
+                  <div>Zombie name : {item.name}</div>
+                  <div>Zombie level : {item.level}</div>
+                  <div>
+                    Zombie status attack :{" "}
+                    {item.statusAttack === true ? "true" : "false"}
+                  </div>
+                  <div>Zombie win count : {item.winCount}</div>
+                  <div>Zombie loss count : {item.lossCount}</div>
+                  <br/>
+                </div>
+              );
+            })}
+          </>
         )}
       </Grid>
     </Grid>
